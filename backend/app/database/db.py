@@ -5,7 +5,8 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-DB_PATH = os.environ.get("DATABASE_URL", str(PROJECT_ROOT / "speechcoach.db")).replace("sqlite:///", "")
+default_db = "/tmp/speechcoach.db" if os.environ.get("VERCEL") else str(PROJECT_ROOT / "speechcoach.db")
+DB_PATH = os.environ.get("DATABASE_URL", default_db).replace("sqlite:///", "")
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -77,7 +78,9 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM dataset_samples")
     count = cursor.fetchone()[0]
     if count == 0:
-        meta_json_path = Path("dataset/metadata/dataset.json")
+        meta_json_path = PROJECT_ROOT / "dataset" / "metadata" / "dataset.json"
+        if not meta_json_path.exists():
+            meta_json_path = Path("dataset/metadata/dataset.json")
         if meta_json_path.exists():
             with open(meta_json_path, "r", encoding="utf-8") as f:
                 samples = json.load(f)

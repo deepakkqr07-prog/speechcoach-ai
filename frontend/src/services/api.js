@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 export const api = {
   // Health
@@ -112,7 +112,7 @@ export const api = {
   getAudioUrl: (urlOrPath) => {
     if (!urlOrPath) return '';
     if (urlOrPath.startsWith('http')) return urlOrPath;
-    if (urlOrPath.startsWith('/api')) return `http://localhost:8000${urlOrPath}`;
-    return `http://localhost:8000/api/audio/${urlOrPath}`;
+    if (urlOrPath.startsWith('/api')) return urlOrPath;
+    return `/api/audio/${urlOrPath}`;
   }
 };

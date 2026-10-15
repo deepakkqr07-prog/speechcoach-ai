@@ -49,6 +49,10 @@ async def get_audio_file(filename: str):
     """Safely serves audio files from uploads or dataset directories"""
     safe_name = os.path.basename(filename)
     
+    tmp_upload = Path("/tmp/uploads") / safe_name
+    if tmp_upload.exists():
+        return FileResponse(tmp_upload, media_type="audio/wav")
+
     upload_path = PROJECT_ROOT / "uploads" / safe_name
     if upload_path.exists():
         return FileResponse(upload_path, media_type="audio/wav")

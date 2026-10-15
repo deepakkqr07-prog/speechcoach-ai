@@ -16,8 +16,8 @@ from ..schemas.schemas import AnalysisResponse, AlignedWord, ScoreBreakdown, Fla
 
 router = APIRouter(prefix="/api", tags=["analysis"])
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-UPLOAD_DIR = PROJECT_ROOT / "uploads"
-UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR = Path("/tmp/uploads") if os.environ.get("VERCEL") else PROJECT_ROOT / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/transcribe")
 async def transcribe_endpoint(audio_file: UploadFile = File(...)):
